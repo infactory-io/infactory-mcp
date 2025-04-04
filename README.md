@@ -1,109 +1,167 @@
 # Infactory MCP Server
 
-An MCP server using https://api.infactory.ai to connect to and build applications with your data.
+An MCP (Model Context Protocol) server for interacting with Infactory APIs using Claude and other LLMs. This server enables language models to access and manipulate data in your Infactory environment.
 
 ## Features
 
-- **Connect**: Connect files, databases and APIs to an Infactory Project
-- **Build**: Build queries to access and transform your data to answer specific questions
-- **Deploy**: Deploy your queries as APIs to build applications with your data
-- **Explore**: An organic chat interface to explore your deployed queries
+- **Project Management**: List, retrieve, and create projects
+- **Query Programs**: List and execute query programs
+- **Datasources**: List, retrieve, and create datasources
+- **User & Team Management**: Get current user information and list teams
 
-## Tools
+## Getting Started
 
-- **list_projects**
-  - Lists all projects in your Infactory account
-- **select_project**
-  - Select a project to work on based on either the provided name or projectId
-  - Inputs:
-    - `projectId` (string): The ID of the Infactory Project.
-    - `projectName` (string): The name of the Infactory Project.
+### Prerequisites
 
-## Configuration
+- An Infactory API key
+- Node.js 18+ (for local installation)
 
-### Setting up Infactory Credentials
+### Installation
 
-1. Obtain API key from the [Infactory Workshop](https://workshop.infactory.ai) then click [API Keys](https://workshop.infactory.ai/api-keys) to generate a new key.
-2. Copy the API key and save it in a secure location.
+#### Using NPX (Recommended)
 
+```bash
+npx -y @infactory/infactory-mcp
+```
 
-## Usage
+#### Using Docker
 
-### Claude Desktop
+```bash
+docker run -i --rm \
+  -e NF_API_KEY="your_api_key_here" \
+  @infactory/infactory-mcp
+```
+
+### Environment Variables
+
+- `NF_API_KEY` (required): Your Infactory API key
+- `NF_BASE_URL` (optional): Custom API endpoint if using a different environment
+
+## Available Tools
+
+### Project Tools
+
+- **list_projects**: List all available projects
+
+  - No parameters required
+
+- **get_project**: Get details of a specific project
+
+  - Parameters:
+    - `project_id` (string): ID of the project to retrieve
+
+- **create_project**: Create a new project
+  - Parameters:
+    - `name` (string): Project name
+    - `description` (string, optional): Project description
+    - `team_id` (string): Team ID
+
+### Query Program Tools
+
+- **list_query_programs**: List query programs in a project
+
+  - Parameters:
+    - `project_id` (string): ID of the project
+
+- **execute_query_program**: Execute a query program
+  - Parameters:
+    - `queryprogram_id` (string): ID of the query program to execute
+    - `input_data` (object, optional): Input data for the query program
+
+### Datasource Tools
+
+- **list_datasources**: List datasources in a project
+
+  - Parameters:
+    - `project_id` (string): ID of the project
+
+- **get_datasource**: Get details of a specific datasource
+
+  - Parameters:
+    - `datasource_id` (string): ID of the datasource
+
+- **create_datasource**: Create a new datasource
+  - Parameters:
+    - `name` (string): Datasource name
+    - `project_id` (string): ID of the project
+    - `type` (string): Datasource type
+
+### User and Team Tools
+
+- **get_current_user**: Get information about the current user
+
+  - No parameters required
+
+- **list_teams**: List teams in an organization
+  - Parameters:
+    - `organization_id` (string): ID of the organization
+
+## Usage with Claude Desktop
 
 Add this to your `claude_desktop_config.json`:
 
 ```json
 {
   "mcpServers": {
-    "infactory-mcp": {
+    "infactory": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@infactory/infactory-mcp"
-      ],
+      "args": ["-y", "@modelcontextprotocol/server-infactory"],
       "env": {
-        "NF_API_KEY": "YOUR_INFACTORY_API_KEY"
+        "NF_API_KEY": "your_api_key_here"
       }
     }
   }
 }
 ```
 
-## Development
-
-### Testing locally
-
-Standalone
-
-```sh
-export NF_API_KEY=nf-************************
-node dist/index.js
-```
-
-Use Inspector
-
-```sh
-npm run build
-export NF_API_KEY=nf-************************
-npx @modelcontextprotocol/inspector -e "NF_API_KEY=$NF_API_KEY" node -- dist/index.js 
-```
-
-### Docker
-
-```sh
-git clone https://github.com/infactory/infactory-mcp.git
-cd infactory-mcp
-docker build -t infactory-mcp -f src/Dockerfile . 
-```
-
-### Docker configuration
-After building the docker image, follow the instructions in the [Usage](#usage-with-claude-desktop) section above but replace `commands` and `args` like below
+Local configuration:
 
 ```json
 {
+  "version": "0.1",
   "mcpServers": {
     "infactory-mcp": {
-      "command": "docker",
-      "args": [ "run", "-i", "--rm", "-e", "NF_API_KEY", "infactory-mcp" ],
+      "command": "node",
+      "args": ["~/repos/CascadeProjects/infactory-mcp/dist/index.js"],
       "env": {
-        "NF_API_KEY": "YOUR_INFACTORY_API_KEY"
+        "NF_API_KEY": "nf-************************"
       }
     }
   }
 }
 ```
 
-## Deployment
+## Example Prompts
 
-This repo is built and deployed to NPM via GitHub Actions.  It is available at https://www.npmjs.com/package/@infactory/infactory-mcp
+Once your MCP server is configured, you can use prompts like these with Claude:
 
-We use the `NPM_TOKEN` github secret to authenticate the publish process and this token will be managed by the Infactory development team.
+- "Show me a list of all my Infactory projects"
+- "Get the details for project proj-123abc"
+- "Create a new project called 'Data Analysis' in team team-456xyz"
+- "List all query programs in project proj-123abc"
+- "Execute query program qp-789def"
+- "Tell me about myself (my user account)"
 
-We use semantic versioning for releases. For example v1.0.0
+## Building from Source
 
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/mcp-server-infactory.git
+cd mcp-server-infactory
+
+# Install dependencies
+npm install
+
+# Build
+npm run build
+
+# Start the server
+npm start
+
+# Optional - start inspector (for debugging)
+npx @modelcontextprotocol/inspector -e "NF_API_KEY=$NF_API_KEY" node -- dist/index.js
+```
 
 ## License
 
-This Infactory MCP server is licensed under the MIT License. This means you are free to use, modify, and distribute the software, subject to the terms and conditions of the MIT License. For more details, please see the LICENSE file in the project repository.
-
+MIT License
