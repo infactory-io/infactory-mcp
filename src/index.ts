@@ -15,6 +15,11 @@ function getApiKey(): string {
 
 const NF_API_KEY = getApiKey();
 
+// const client = new InfactoryClient({
+//   apiKey: NF_API_KEY
+// });
+
+// Create an MCP server
 const client = new InfactoryClient({
   apiKey: NF_API_KEY
 });
@@ -22,7 +27,8 @@ const client = new InfactoryClient({
 // Create an MCP server
 const server = new McpServer({
   name: "Infactory MCP Server",
-  version: "0.0.2"  // Make sure this aligns with package.json
+  version: "0.0.2",  // Make sure this aligns with package.json
+  description: "MCP server for Infactory integration"
 });
 
 // Add an addition tool
@@ -40,7 +46,8 @@ server.resource(
   async (uri, { name }) => ({
     contents: [{
       uri: uri.href,
-      text: `Hello, ${name}! we have ${client.projects.getProjects()}`
+      type: "text/plain",
+      text: `Hello, ${name}! Welcome to Infactory MCP Server.`
     }]
   })
 );

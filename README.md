@@ -52,6 +52,23 @@ Add this to your `claude_desktop_config.json`:
 
 ## Development
 
+### Testing locally
+
+Standalone
+
+```sh
+export NF_API_KEY=nf-************************
+node dist/index.js
+```
+
+Use Inspector
+
+```sh
+npm run build
+export NF_API_KEY=nf-************************
+npx @modelcontextprotocol/inspector -e "NF_API_KEY=$NF_API_KEY" node -- dist/index.js 
+```
+
 ### Docker
 
 ```sh
