@@ -96,25 +96,31 @@ docker run -i --rm \
   - Parameters:
     - `organization_id` (string): ID of the organization
 
-## Usage with Claude Desktop
+## Usage with Claude Desktop + Windsurf + Cursor
 
-Add this to your `claude_desktop_config.json`:
+Here is the likely location of your MCP configuration file:
 
+ * Claude Desktop - Add this to your `claude_desktop_config.json`:
+ * Windsurf - Add this to your `~/.codeium/windsurf/mcp_config.json`:
+ * Cursor - Add this to your `~/.cursor/mcp.json`:
+
+Add this to your MCP configuration:
 ```json
 {
+  "version": "0.1",
   "mcpServers": {
-    "infactory": {
+    "infactory-mcp": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-infactory"],
+      "args": ["-y", "@infactory/infactory-mcp"],
       "env": {
-        "NF_API_KEY": "your_api_key_here"
+        "NF_API_KEY": "nf-************************"
       }
     }
   }
 }
 ```
 
-Local configuration:
+Or if you are doing development:
 
 ```json
 {
@@ -122,7 +128,7 @@ Local configuration:
   "mcpServers": {
     "infactory-mcp": {
       "command": "node",
-      "args": ["~/repos/CascadeProjects/infactory-mcp/dist/index.js"],
+      "args": ["FULL_PATH_TO/infactory-mcp/dist/index.js"],
       "env": {
         "NF_API_KEY": "nf-************************"
       }
