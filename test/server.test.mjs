@@ -1,6 +1,10 @@
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { config } from 'dotenv';
+
+// Load environment variables from .env file
+config({ path: join(dirname(fileURLToPath(import.meta.url)), '..', '.env') });
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -8,7 +12,7 @@ async function main() {
   console.log('API Key:', process.env.NF_API_KEY ? 'Present' : 'Missing');
 
   // Spawn the server process
-  const serverProcess = spawn('node', [join(__dirname, 'dist', 'index.js')], {
+  const serverProcess = spawn('node', [join(__dirname, '..', 'dist', 'index.js')], {
     stdio: ['pipe', 'pipe', 'pipe'],
     env: { ...process.env, NF_API_KEY: process.env.NF_API_KEY }
   });

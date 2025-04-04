@@ -56,7 +56,7 @@ async function runServer() {
   // Start receiving messages on stdin and sending messages on stdout
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.info("Infactory MCP Server running on stdio");
+  // console.info("Infactory MCP Server running on stdio");
 }
 
 runServer().catch((error) => {

@@ -10,14 +10,19 @@
   ],
   "scripts": {
     "build": "tsc && chmod 755 dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:watch": "tsc --watch",
+    "test": "npm run build && node test/server.test.mjs",
+    "test:watch": "concurrently \"npm run build:watch\" \"nodemon --watch dist --watch test test/server.test.mjs\""
   },
   "keywords": [],
   "author": "Sean Kruzel <sean@infactory.ai>",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.17.30",
+    "concurrently": "^9.1.2",
+    "dotenv": "^16.4.7",
     "esbuild": "^0.25.2",
+    "nodemon": "^3.1.9",
     "typescript": "^5.8.2",
     "zod": "^3.24.2"
   },
