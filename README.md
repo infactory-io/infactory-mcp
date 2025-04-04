@@ -42,9 +42,11 @@ docker run -i --rm \
 ### Project Tools
 
 - **list_projects**: List all available projects
+
   - No parameters required
 
 - **get_project**: Get details of a specific project
+
   - Parameters:
     - `project_id` (string): ID of the project to retrieve
 
@@ -57,6 +59,7 @@ docker run -i --rm \
 ### Query Program Tools
 
 - **list_query_programs**: List query programs in a project
+
   - Parameters:
     - `project_id` (string): ID of the project
 
@@ -68,10 +71,12 @@ docker run -i --rm \
 ### Datasource Tools
 
 - **list_datasources**: List datasources in a project
+
   - Parameters:
     - `project_id` (string): ID of the project
 
 - **get_datasource**: Get details of a specific datasource
+
   - Parameters:
     - `datasource_id` (string): ID of the datasource
 
@@ -84,6 +89,7 @@ docker run -i --rm \
 ### User and Team Tools
 
 - **get_current_user**: Get information about the current user
+
   - No parameters required
 
 - **list_teams**: List teams in an organization
@@ -109,18 +115,19 @@ Add this to your `claude_desktop_config.json`:
 ```
 
 Local configuration:
+
 ```json
 {
   "version": "0.1",
   "mcpServers": {
-      "infactory-mcp": {
-        "command": "node",
-        "args": ["~/repos/CascadeProjects/infactory-mcp/dist/index.js"],
-        "env": {
-          "NF_API_KEY": "nf-************************"
-        }
+    "infactory-mcp": {
+      "command": "node",
+      "args": ["~/repos/CascadeProjects/infactory-mcp/dist/index.js"],
+      "env": {
+        "NF_API_KEY": "nf-************************"
       }
     }
+  }
 }
 ```
 

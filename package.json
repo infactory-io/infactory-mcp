@@ -1,6 +1,6 @@
 {
   "name": "@infactory/infactory-mcp",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "type": "module",
   "description": "Infactory MCP package",
   "main": "dist/index.js",
@@ -19,7 +19,8 @@
     "dev:watch": "tsx --watch index.ts",
     "inspector": "npx @modelcontextprotocol/inspector -e \"NF_API_KEY=$NF_API_KEY\" node -- dist/index.js",
     "test": "npm run build && node test/server.test.mjs",
-    "test:watch": "concurrently \"npm run build:watch\" \"nodemon --watch dist --watch test test/server.test.mjs\""
+    "test:watch": "concurrently \"npm run build:watch\" \"nodemon --watch dist --watch test test/server.test.mjs\"",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "Sean Kruzel <sean@infactory.ai>",
@@ -31,6 +32,7 @@
     "dotenv": "^16.4.7",
     "esbuild": "^0.25.2",
     "nodemon": "^3.1.9",
+    "prettier": "^3.5.3",
     "shx": "^0.4.0",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2",
