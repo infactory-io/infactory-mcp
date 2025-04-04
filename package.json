@@ -9,6 +9,8 @@
     "dist"
   ],
   "scripts": {
+    "mcp:dev": "tsx src/index.ts",
+    "mcp:dev:watch": "tsx --watch src/index.ts",
     "build": "tsc && chmod 755 dist/index.js",
     "build:watch": "tsc --watch",
     "test": "npm run build && node test/server.test.mjs",
@@ -19,10 +21,12 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.17.30",
+    "@types/react": "^19.1.0",
     "concurrently": "^9.1.2",
     "dotenv": "^16.4.7",
     "esbuild": "^0.25.2",
     "nodemon": "^3.1.9",
+    "tsx": "^4.19.3",
     "typescript": "^5.8.2",
     "zod": "^3.24.2"
   },

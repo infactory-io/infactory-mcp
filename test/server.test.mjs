@@ -37,11 +37,36 @@ async function main() {
     id: 2
   };
 
+  // Send test messages
+  console.log('Testing add tool...');
+  serverProcess.stdin.write(JSON.stringify(addToolMessage) + '\n');
+  setTimeout(() => {
+    console.log('\nTesting greeting resource...');
+    serverProcess.stdin.write(JSON.stringify(greetingMessage) + '\n');
+    
+    serverProcess.stdout.once('data', (data) => {
+      try {
+        const response = JSON.parse(data.toString());
+        if (!response.error && typeof response === 'object') {
+          console.log('Greeting response is valid JSON:', JSON.stringify(response, null, 2));
+        } else {
+          console.error('Greeting response is not a valid JSON message or contains an error:', data.toString());
+        }
+      } catch (e) {
+        console.error('Failed to parse greeting response:', e);
+      }
+    });
+  }, 1000);
+
   // Listen for responses
   serverProcess.stdout.on('data', (data) => {
     try {
       const response = JSON.parse(data.toString());
-      console.log('Server response:', JSON.stringify(response, null, 2));
+      if (!response.error && typeof response === 'object') {
+        console.log('Server response:', JSON.stringify(response, null, 2));
+      } else {
+        console.error('Server response contains an error:', data.toString());
+      }
     } catch (e) {
       console.log('Raw server output:', data.toString());
     }
@@ -51,14 +76,6 @@ async function main() {
     console.error('Server error:', data.toString());
   });
 
-  // Send test messages
-  console.log('Testing add tool...');
-  serverProcess.stdin.write(JSON.stringify(addToolMessage) + '\n');
-
-  setTimeout(() => {
-    console.log('\nTesting greeting resource...');
-    serverProcess.stdin.write(JSON.stringify(greetingMessage) + '\n');
-  }, 1000);
 
   // Clean up after tests
   setTimeout(() => {
