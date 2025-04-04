@@ -37,7 +37,7 @@ const server = new McpServer({
 server.tool(
   'list_projects',
   {},
-  async () => {
+  async (_args, _extra) => {
     const client = getClient();
     const response = await client.projects.getProjects();
     return { content: [{ type: 'text', text: formatResponse(response) }] };
@@ -144,7 +144,7 @@ server.tool(
 server.tool(
   'get_current_user',
   {},
-  async () => {
+  async (_args, _extra) => {
     const client = getClient();
     const response = await client.users.getCurrentUser();
     return { content: [{ type: 'text', text: formatResponse(response) }] };
