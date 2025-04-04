@@ -1,4 +1,5 @@
-// index.ts
+#!/usr/bin/env node
+
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { InfactoryClient, ApiResponse } from "@infactory/infactory-ts";
