@@ -11,12 +11,13 @@ An MCP server using https://api.infactory.ai to connect to and build application
 
 ## Tools
 
-- **retrieve_from_infactory_kb**
-  - Perform retrieval operations using the Infactory Knowledge Base.
+- **list_projects**
+  - Lists all projects in your Infactory account
+- **select_project**
+  - Select a project to work on based on either the provided name or projectId
   - Inputs:
-    - `query` (string): The search query for retrieval.
-    - `knowledgeBaseId` (string): The ID of the Infactory Knowledge Base.
-    - `n` (number, optional): Number of results to retrieve (default: 3).
+    - `projectId` (string): The ID of the Infactory Project.
+    - `projectName` (string): The name of the Infactory Project.
 
 ## Configuration
 
@@ -26,7 +27,9 @@ An MCP server using https://api.infactory.ai to connect to and build application
 2. Copy the API key and save it in a secure location.
 
 
-### Usage with Claude Desktop
+## Usage
+
+### Claude Desktop
 
 Add this to your `claude_desktop_config.json`:
 
@@ -47,7 +50,7 @@ Add this to your `claude_desktop_config.json`:
 }
 ```
 
-## Building and Development usage
+## Development
 
 ### Docker
 
@@ -74,6 +77,16 @@ After building the docker image, follow the instructions in the [Usage](#usage-w
 }
 ```
 
+## Deployment
+
+This repo is built and deployed to NPM via GitHub Actions.  It is available at https://www.npmjs.com/package/@infactory/infactory-mcp
+
+We use the `NPM_TOKEN` github secret to authenticate the publish process and this token will be managed by the Infactory development team.
+
+We use semantic versioning for releases. For example v1.0.0
+
+
 ## License
 
 This Infactory MCP server is licensed under the MIT License. This means you are free to use, modify, and distribute the software, subject to the terms and conditions of the MIT License. For more details, please see the LICENSE file in the project repository.
+

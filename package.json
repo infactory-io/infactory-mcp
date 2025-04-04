@@ -1,6 +1,6 @@
 {
   "name": "@infactory/infactory-mcp",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Infactory MCP package",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,19 +8,20 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && chmod 755 dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Sean Kruzel <sean@infactory.ai>",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.14.10",
+    "@types/node": "^20.17.30",
     "esbuild": "^0.25.2",
-    "typescript": "^5.5.3",
-    "zod": "^3.23.8"
+    "typescript": "^5.8.2",
+    "zod": "^3.24.2"
   },
   "dependencies": {
+    "@infactory/infactory-ts": "^0.5.3",
     "@modelcontextprotocol/sdk": "^1.8.0"
   }
 }
