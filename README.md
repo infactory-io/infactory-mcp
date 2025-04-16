@@ -100,11 +100,12 @@ docker run -i --rm \
 
 Here is the likely location of your MCP configuration file:
 
- * Claude Desktop - Add this to your `claude_desktop_config.json`:
- * Windsurf - Add this to your `~/.codeium/windsurf/mcp_config.json`:
- * Cursor - Add this to your `~/.cursor/mcp.json`:
+- Claude Desktop - Add this to your `claude_desktop_config.json`:
+- Windsurf - Add this to your `~/.codeium/windsurf/mcp_config.json`:
+- Cursor - Add this to your `~/.cursor/mcp.json`:
 
 Add this to your MCP configuration:
+
 ```json
 {
   "version": "0.1",
