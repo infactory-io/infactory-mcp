@@ -67,7 +67,7 @@ server.tool(
     const response = await client.projects.createProject({
       name,
       description,
-      team_id,
+      teamId: team_id,
     });
     return { content: [{ type: "text", text: formatResponse(response) }] };
   },
@@ -142,7 +142,7 @@ server.tool(
     const client = getClient();
     const response = await client.datasources.createDatasource({
       name,
-      project_id,
+      projectId: project_id,
       type,
     });
     return { content: [{ type: "text", text: formatResponse(response) }] };
@@ -165,7 +165,7 @@ server.tool(
   { organization_id: z.string().describe("Organization ID") },
   async ({ organization_id }) => {
     const client = getClient();
-    const response = await client.teams.getTeams(organization_id);
+    const response = await client.teams.getTeams({ organizationId: organization_id });
     return { content: [{ type: "text", text: formatResponse(response) }] };
   },
 );
