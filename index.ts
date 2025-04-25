@@ -213,52 +213,250 @@ server.tool(
   },
 );
 
-// server.tool(
-//   "create_query_program",
-//   {
-//     project_id: z.string().describe("Project ID to create the program in"),
-//     name: z.string().optional().describe("Name for the query program"),
-//     query: z
-//       .string()
-//       .optional()
-//       .describe("Natural language query or definition"),
-//     // Add other optional fields from CreateQueryProgramParams if needed (queryProgram, steps, slots, stores, published)
-//   },
-//   async (params) => {
-//     const client = getClient();
-//     const response = await client.queryPrograms.createQueryProgram({
-//       projectId: params.project_id,
-//       name: params.name,
-//       query: params.query,
-//       // Map other params if added to the schema
-//     });
-//     return {
-//       content: [{ type: "text", text: await formatResponse(response) }],
-//     };
-//   },
-// );
+// Generate tools
+server.tool(
+  "generate_api",
+  {
+    project_id: z.string().describe("Project ID to generate API in"),
+    description: z.string().describe("Description of the API to generate"),
+    name: z.string().optional().describe("Name for the generated API"),
+  },
+  async ({ project_id, description, name }) => {
+    const client = getClient();
+    const response = await client.generate.generateApi({
+      projectId: project_id,
+      description,
+    });
+    return {
+      content: [{ type: "text", text: await formatResponse(response) }],
+    };
+  },
+);
 
-// server.tool(
-//   "update_query_program",
-//   {
-//     queryprogram_id: z.string().describe("ID of the query program to update"),
-//     name: z.string().optional().describe("New name for the query program"),
-//     query: z.string().optional().describe("Updated query definition"),
-//     published: z.boolean().optional().describe("New published status"),
-//     // Add other optional fields from CreateQueryProgramParams if needed
-//   },
-//   async (params) => {
-//     const client = getClient();
-//     const { queryprogram_id, ...updateData } = params; // Separate ID from update payload
-//     const response = await client.queryPrograms.updateQueryProgram(
-//       queryprogram_id,
-//       updateData, // Pass remaining fields as update payload
-//     );
-//     return {
-//       content: [{ type: "text", text: await formatResponse(response) }],
-//     };
-//   },
-// );
+server.tool(
+  "generate_api_endpoint",
+  {
+    api_id: z.string().describe("API ID to add the endpoint to"),
+    description: z.string().describe("Description of the endpoint to generate"),
+    name: z.string().optional().describe("Name for the generated endpoint"),
+    http_method: z.string().optional().describe("HTTP method for the endpoint"),
+    path: z.string().optional().describe("Path for the endpoint"),
+  },
+  async ({ api_id, description, name, http_method, path }) => {
+    const client = getClient();
+    // Convert parameters to match SDK expectations
+    const params: any = {
+      apiId: api_id,
+      description,
+    };
+
+    // Add optional parameters if provided
+    if (http_method) params.method = http_method;
+    if (path) params.path = path;
+
+    const response = await client.generate.generateApiEndpoint(params);
+    return {
+      content: [{ type: "text", text: await formatResponse(response) }],
+    };
+  },
+);
+
+server.tool(
+  "generate_data_model",
+  {
+    project_id: z.string().describe("Project ID to create the data model in"),
+    description: z
+      .string()
+      .describe("Description of the data model to generate"),
+    sample_data: z
+      .string()
+      .optional()
+      .describe("Optional sample data in JSON format"),
+    name: z.string().optional().describe("Name for the generated data model"),
+  },
+  async ({ project_id, description, sample_data, name }) => {
+    const client = getClient();
+    const response = await client.generate.generateDataModel({
+      projectId: project_id,
+      description,
+      sampleData: sample_data ? JSON.parse(sample_data) : undefined,
+    });
+    return {
+      content: [{ type: "text", text: await formatResponse(response) }],
+    };
+  },
+);
+
+server.tool(
+  "generate_function_call",
+  {
+    description: z
+      .string()
+      .describe("Description of the function call to generate"),
+    schema: z.string().describe("JSON schema of the function"),
+  },
+  async ({ description, schema }) => {
+    const client = getClient();
+    // Convert parameters to match SDK expectations
+    const params: any = {
+      functionSchema: JSON.parse(schema),
+      description,
+    };
+
+    const response = await client.generate.generateFunctionCall(params);
+    return {
+      content: [{ type: "text", text: await formatResponse(response) }],
+    };
+  },
+);
+
+server.tool(
+  "generate_query_program",
+  {
+    project_id: z
+      .string()
+      .describe("Project ID to create the query program in"),
+    query: z.string().describe("Natural language query or description"),
+    name: z
+      .string()
+      .optional()
+      .describe("Name for the generated query program"),
+  },
+  async ({ project_id, query, name }) => {
+    const client = getClient();
+    const response = await client.generate.generateQueryProgram({
+      projectId: project_id,
+      naturalLanguageQuery: query,
+    });
+    return {
+      content: [{ type: "text", text: await formatResponse(response) }],
+    };
+  },
+);
+
+server.tool(
+  "generate_questions",
+  {
+    project_id: z
+      .string()
+      .describe("Project ID context for generating questions"),
+    context: z
+      .string()
+      .optional()
+      .describe("Additional context for question generation"),
+    count: z.number().optional().describe("Number of questions to generate"),
+  },
+  async ({ project_id, context, count }) => {
+    const client = getClient();
+    const response = await client.generate.generateQuestions({
+      projectId: project_id,
+      count,
+    });
+    return {
+      content: [{ type: "text", text: await formatResponse(response) }],
+    };
+  },
+);
+
+server.tool(
+  "generate_readable_answer",
+  {
+    query_response_id: z
+      .string()
+      .describe("Query response ID to generate an answer for"),
+    format: z
+      .string()
+      .optional()
+      .describe("Format for the answer (e.g., markdown, text)"),
+  },
+  async ({ query_response_id, format }) => {
+    const client = getClient();
+    const response =
+      await client.generate.generateReadableAnswerForQueryResponse(
+        query_response_id,
+        { format: format as "text" | "markdown" | undefined },
+      );
+    return {
+      content: [{ type: "text", text: await formatResponse(response) }],
+    };
+  },
+);
+
+server.tool(
+  "generate_readable_answer_for_message",
+  {
+    message_id: z.string().describe("Message ID to generate an answer for"),
+    format: z
+      .string()
+      .optional()
+      .describe("Format for the answer (e.g., markdown, text)"),
+  },
+  async ({ message_id, format }) => {
+    const client = getClient();
+    const response = await client.generate.generateReadableAnswerForMessage(
+      message_id,
+      { format: format as "text" | "markdown" | undefined },
+    );
+    return {
+      content: [{ type: "text", text: await formatResponse(response) }],
+    };
+  },
+);
+
+server.tool(
+  "generate_ontology",
+  {
+    project_id: z.string().describe("Project ID to generate ontology for"),
+    description: z
+      .string()
+      .optional()
+      .describe("Description of the ontology to generate"),
+  },
+  async ({ project_id, description }) => {
+    const client = getClient();
+    const response = await client.generate.generateOntology({
+      projectId: project_id,
+      description,
+    });
+    return {
+      content: [{ type: "text", text: await formatResponse(response) }],
+    };
+  },
+);
+
+server.tool(
+  "generate_knowledge_entity_link",
+  {
+    project_id: z.string().describe("Project ID for context"),
+    text: z.string().describe("Text to analyze for entity links"),
+    stream: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe("Whether to stream the response"),
+  },
+  async ({ project_id, text, stream }) => {
+    const client = getClient();
+    let response;
+    if (stream === true) {
+      response = await client.generate.generateKnowledgeEntityLink(
+        {
+          projectId: project_id,
+          text,
+        },
+        true,
+      );
+    } else {
+      response = await client.generate.generateKnowledgeEntityLink({
+        projectId: project_id,
+        text,
+      });
+    }
+    return {
+      content: [{ type: "text", text: await formatResponse(response) }],
+    };
+  },
+);
 
 server.tool(
   "delete_query_program",
