@@ -23,7 +23,6 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "vitest run --config vitest.e2e.config.ts",
-    "test:legacy": "npm run build && node test/server.test.mjs",
     "format": "prettier --write ."
   },
   "keywords": [],

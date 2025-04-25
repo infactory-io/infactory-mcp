@@ -10,6 +10,8 @@ import {
 } from "@infactory/infactory-ts";
 import { z } from "zod";
 
+const VERSION = "0.5.1";
+
 // Initialize Infactory client
 function getClient(): InfactoryClient {
   const apiKey = process.env.NF_API_KEY;
@@ -68,7 +70,7 @@ async function formatResponse<T>(
 // Create server instance
 const server = new McpServer({
   name: "infactory-mcp",
-  version: "0.1.7", // Incremented version
+  version: VERSION, // Incremented version
 });
 
 // Project tools
@@ -183,21 +185,13 @@ server.tool(
   "execute_query_program",
   {
     queryprogram_id: z.string().describe("Query Program ID"),
-    input_data: z
-      .record(z.any())
-      .optional()
-      .describe("Optional input data for the query program"),
-    // Optional: Add a stream parameter if you want the *user* to control streaming
-    // stream: z.boolean().optional().default(false).describe("Set to true to receive a streaming response")
+    project_id: z.string().describe("Project ID"),
   },
-  // async ({ queryprogram_id, input_data, stream }) => { // If adding stream control
-  async ({ queryprogram_id, input_data }) => {
+  async ({ queryprogram_id, project_id }) => {
     const client = getClient();
-    // Pass input_data directly as second argument
-    // Add stream param if implementing user control: , { ...input_data, stream }
     const response = await client.queryPrograms.executeQueryProgram(
       queryprogram_id,
-      input_data, // Pass input_data directly as parameters
+      { projectId: project_id, stream: false },
     );
     // Await formatResponse (now handles potential stream)
     return {
@@ -219,52 +213,52 @@ server.tool(
   },
 );
 
-server.tool(
-  "create_query_program",
-  {
-    project_id: z.string().describe("Project ID to create the program in"),
-    name: z.string().optional().describe("Name for the query program"),
-    query: z
-      .string()
-      .optional()
-      .describe("Natural language query or definition"),
-    // Add other optional fields from CreateQueryProgramParams if needed (queryProgram, steps, slots, stores, published)
-  },
-  async (params) => {
-    const client = getClient();
-    const response = await client.queryPrograms.createQueryProgram({
-      projectId: params.project_id,
-      name: params.name,
-      query: params.query,
-      // Map other params if added to the schema
-    });
-    return {
-      content: [{ type: "text", text: await formatResponse(response) }],
-    };
-  },
-);
+// server.tool(
+//   "create_query_program",
+//   {
+//     project_id: z.string().describe("Project ID to create the program in"),
+//     name: z.string().optional().describe("Name for the query program"),
+//     query: z
+//       .string()
+//       .optional()
+//       .describe("Natural language query or definition"),
+//     // Add other optional fields from CreateQueryProgramParams if needed (queryProgram, steps, slots, stores, published)
+//   },
+//   async (params) => {
+//     const client = getClient();
+//     const response = await client.queryPrograms.createQueryProgram({
+//       projectId: params.project_id,
+//       name: params.name,
+//       query: params.query,
+//       // Map other params if added to the schema
+//     });
+//     return {
+//       content: [{ type: "text", text: await formatResponse(response) }],
+//     };
+//   },
+// );
 
-server.tool(
-  "update_query_program",
-  {
-    queryprogram_id: z.string().describe("ID of the query program to update"),
-    name: z.string().optional().describe("New name for the query program"),
-    query: z.string().optional().describe("Updated query definition"),
-    published: z.boolean().optional().describe("New published status"),
-    // Add other optional fields from CreateQueryProgramParams if needed
-  },
-  async (params) => {
-    const client = getClient();
-    const { queryprogram_id, ...updateData } = params; // Separate ID from update payload
-    const response = await client.queryPrograms.updateQueryProgram(
-      queryprogram_id,
-      updateData, // Pass remaining fields as update payload
-    );
-    return {
-      content: [{ type: "text", text: await formatResponse(response) }],
-    };
-  },
-);
+// server.tool(
+//   "update_query_program",
+//   {
+//     queryprogram_id: z.string().describe("ID of the query program to update"),
+//     name: z.string().optional().describe("New name for the query program"),
+//     query: z.string().optional().describe("Updated query definition"),
+//     published: z.boolean().optional().describe("New published status"),
+//     // Add other optional fields from CreateQueryProgramParams if needed
+//   },
+//   async (params) => {
+//     const client = getClient();
+//     const { queryprogram_id, ...updateData } = params; // Separate ID from update payload
+//     const response = await client.queryPrograms.updateQueryProgram(
+//       queryprogram_id,
+//       updateData, // Pass remaining fields as update payload
+//     );
+//     return {
+//       content: [{ type: "text", text: await formatResponse(response) }],
+//     };
+//   },
+// );
 
 server.tool(
   "delete_query_program",

@@ -183,7 +183,7 @@ describe("formatResponse", () => {
 
     expect(sdk.isReadableStream).toHaveBeenCalledWith(mockStream);
     expect(sdk.processStreamToApiResponse).toHaveBeenCalledWith(mockStream);
-    expect(result).toBe(`{"error":{"message":"Stream processing error","details":""}}`);
+    expect(result).toBe(`Error: Stream processing error`);
   });
 
   it("should handle exception during stream processing", async () => {

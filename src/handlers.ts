@@ -14,15 +14,12 @@ export function getClient(): InfactoryClient {
 
   const baseURL = process.env.NF_BASE_URL || "https://api.infactory.ai";
 
-  console.error("Using Infactory MCP Server:", baseURL);
-
   return new InfactoryClient({
     apiKey,
     baseURL,
   });
 }
 
-// Format API responses consistently, handles streams, now async
 export async function formatResponse<T>(
   response: ApiResponse<T> | ReadableStream<Uint8Array>,
 ): Promise<string> {
@@ -33,28 +30,31 @@ export async function formatResponse<T>(
       const processedResponse = await processStreamToApiResponse<T>(response);
       if (processedResponse.error) {
         console.error("Stream processing error:", processedResponse.error);
-        // Provide more detail from the specific error type if available
         const message =
           processedResponse.error.message ||
           JSON.stringify(processedResponse.error);
         const details = processedResponse.error.details
           ? ` Details: ${JSON.stringify(processedResponse.error.details)}`
           : "";
-        return JSON.stringify({
-          error: {
-            message,
-            details,
-          },
-        });
+        return `Error: ${message}${details}`;
       }
       console.error("Stream processed successfully."); // Log to stderr
+      // Check if data is already a JSON string - avoid double stringify
       if (
         typeof processedResponse.data === "string" &&
-        processedResponse.data.startsWith("{")
+        (processedResponse.data.startsWith("{") ||
+          processedResponse.data.startsWith("["))
       ) {
-        return processedResponse.data;
+        try {
+          // Validate if it's actually JSON before returning raw
+          JSON.parse(processedResponse.data);
+          return processedResponse.data;
+        } catch (e) {
+          // If not valid JSON, stringify it
+          return JSON.stringify(processedResponse.data, null, 2);
+        }
       }
-      return JSON.stringify(processedResponse.data, null, 2); // Handle potentially undefined data
+      return JSON.stringify(processedResponse.data ?? null, null, 2);
     } catch (streamError) {
       console.error("Exception during stream processing:", streamError);
       return `Error processing stream: ${streamError instanceof Error ? streamError.message : String(streamError)}`;
@@ -69,7 +69,19 @@ export async function formatResponse<T>(
       : "";
     return `Error: ${message}${details}`;
   }
-  return JSON.stringify(response.data ?? null, null, 2); // Handle potentially undefined data
+  // Check if data is already a JSON string - avoid double stringify
+  if (
+    typeof response.data === "string" &&
+    (response.data.startsWith("{") || response.data.startsWith("["))
+  ) {
+    try {
+      JSON.parse(response.data);
+      return response.data;
+    } catch (e) {
+      return JSON.stringify(response.data, null, 2);
+    }
+  }
+  return JSON.stringify(response.data ?? null, null, 2);
 }
 
 // Project handlers
