@@ -10,7 +10,7 @@ import {
 } from "@infactory/infactory-ts";
 import { z } from "zod";
 
-const VERSION = "0.5.1";
+const VERSION = "0.6.1";
 
 // Initialize Infactory client
 function getClient(): InfactoryClient {
