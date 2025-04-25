@@ -121,6 +121,22 @@ Add this to your MCP configuration:
 }
 ```
 
+```json
+{
+    "version": "0.1",
+    "mcpServers": {
+      "infactory-mcp": {
+        "command": "npx",
+        "args": ["-y", "@infactory/infactory-mcp@0.6.1"],
+        "env": {
+          "NF_API_KEY": "nf-2FEUOhBAeMOtzyTqK1VEMFc7D-AMsL89gQOTsDURJn0",
+          "NF_BASE_URL": "http://localhost:8000"
+        }
+      }
+    }
+  }  
+```
+
 Or if you are doing development:
 
 ```json
