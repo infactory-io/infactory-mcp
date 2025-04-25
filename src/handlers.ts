@@ -12,7 +12,9 @@ export function getClient(): InfactoryClient {
     throw new Error("NF_API_KEY environment variable is required");
   }
 
-  const baseURL = process.env.NF_BASE_URL;
+  const baseURL = process.env.NF_BASE_URL || "https://api.infactory.ai";
+
+  console.error("Using Infactory MCP Server:", baseURL);
 
   return new InfactoryClient({
     apiKey,
@@ -26,7 +28,7 @@ export async function formatResponse<T>(
 ): Promise<string> {
   // Handle streaming responses
   if (isReadableStream(response)) {
-    console.info("Received stream, processing..."); // Added logging
+    console.error("Received stream, processing..."); // Log to stderr
     try {
       const processedResponse = await processStreamToApiResponse<T>(response);
       if (processedResponse.error) {
@@ -38,10 +40,21 @@ export async function formatResponse<T>(
         const details = processedResponse.error.details
           ? ` Details: ${JSON.stringify(processedResponse.error.details)}`
           : "";
-        return `Error: ${message}${details}`;
+        return JSON.stringify({
+          error: {
+            message,
+            details,
+          },
+        });
       }
-      console.info("Stream processed successfully.");
-      return JSON.stringify(processedResponse.data ?? null, null, 2); // Handle potentially undefined data
+      console.error("Stream processed successfully."); // Log to stderr
+      if (
+        typeof processedResponse.data === "string" &&
+        processedResponse.data.startsWith("{")
+      ) {
+        return processedResponse.data;
+      }
+      return JSON.stringify(processedResponse.data, null, 2); // Handle potentially undefined data
     } catch (streamError) {
       console.error("Exception during stream processing:", streamError);
       return `Error processing stream: ${streamError instanceof Error ? streamError.message : String(streamError)}`;

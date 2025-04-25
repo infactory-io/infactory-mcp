@@ -8,9 +8,9 @@ vi.mock("@modelcontextprotocol/sdk/server/mcp.js", () => {
         name: config.name,
         version: config.version,
         tool: vi.fn(),
-        connect: vi.fn()
+        connect: vi.fn(),
       };
-    })
+    }),
   };
 });
 
@@ -22,16 +22,12 @@ vi.mock("@infactory/infactory-ts", () => {
   return {
     InfactoryClient: vi.fn().mockImplementation(() => ({
       projects: {
-        getProjects: vi
-          .fn()
-          .mockResolvedValue({
-            data: [{ id: "mock-project", name: "Mock Project" }],
-          }),
-        getProject: vi
-          .fn()
-          .mockResolvedValue({
-            data: { id: "mock-project", name: "Mock Project" },
-          }),
+        getProjects: vi.fn().mockResolvedValue({
+          data: [{ id: "mock-project", name: "Mock Project" }],
+        }),
+        getProject: vi.fn().mockResolvedValue({
+          data: { id: "mock-project", name: "Mock Project" },
+        }),
       },
       users: {
         getCurrentUser: vi

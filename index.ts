@@ -32,7 +32,7 @@ async function formatResponse<T>(
 ): Promise<string> {
   // Handle streaming responses
   if (isReadableStream(response)) {
-    console.info("Received stream, processing..."); // Added logging
+    console.error("Received stream, processing..."); // Log to stderr
     try {
       const processedResponse = await processStreamToApiResponse<T>(response);
       if (processedResponse.error) {
@@ -46,7 +46,7 @@ async function formatResponse<T>(
           : "";
         return `Error: ${message}${details}`;
       }
-      console.info("Stream processed successfully.");
+      console.error("Stream processed successfully."); // Log to stderr
       return JSON.stringify(processedResponse.data ?? null, null, 2); // Handle potentially undefined data
     } catch (streamError) {
       console.error("Exception during stream processing:", streamError);
@@ -960,22 +960,32 @@ async function runServer() {
 
   // Handle graceful shutdown
   process.on("SIGINT", () => {
-    console.info("Shutting down server..."); // Use console.info for consistency
+    console.error(
+      JSON.stringify({
+        level: "info",
+        message: "Shutting down server (SIGINT)...",
+      }),
+    ); // Log to stderr
     process.exit(0);
   });
 
   process.on("SIGTERM", () => {
-    console.info("Shutting down server..."); // Handle SIGTERM too
+    console.error(
+      JSON.stringify({
+        level: "info",
+        message: "Shutting down server (SIGTERM)...",
+      }),
+    ); // Log to stderr
     process.exit(0);
   });
 
   try {
-    console.info("Infactory MCP server starting..."); // Added startup message
+    // console.info(JSON.stringify({ message: "Infactory MCP server starting..." })); // Added startup message
     // Start receiving messages on stdin and sending messages on stdout
     await server.connect(transport);
-    console.info("Infactory MCP server connected and listening.");
+    // console.info(JSON.stringify({ message: "Infactory MCP server connected and listening." }));
   } catch (error) {
-    console.error("Server error:", error);
+    console.error(JSON.stringify({ message: "Server error: " + error }));
     process.exit(1);
   }
 }

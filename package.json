@@ -1,6 +1,6 @@
 {
   "name": "@infactory/infactory-mcp",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "type": "module",
   "description": "Infactory MCP package",
   "main": "dist/index.js",
@@ -17,7 +17,7 @@
     "start": "node dist/index.js",
     "dev": "tsx index.ts",
     "dev:watch": "tsx --watch index.ts",
-    "inspector": "npx @modelcontextprotocol/inspector -e \"NF_API_KEY=$NF_API_KEY\" node -- dist/index.js",
+    "inspector": "npx @modelcontextprotocol/inspector -e \"NF_API_KEY=$NF_API_KEY\" -e \"NF_BASE_URL=$NF_BASE_URL\" node -- dist/index.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",

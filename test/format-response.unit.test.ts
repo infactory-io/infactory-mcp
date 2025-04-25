@@ -13,11 +13,17 @@ vi.mock("@infactory/infactory-ts", async () => {
     requestId?: string;
     details?: any;
 
-    constructor(props: { message: string; status?: number; code?: string; details?: any; requestId?: string }) {
+    constructor(props: {
+      message: string;
+      status?: number;
+      code?: string;
+      details?: any;
+      requestId?: string;
+    }) {
       this.message = props.message;
       this.status = props.status || 500;
-      this.code = props.code || 'ERROR';
-      this.name = 'InfactoryAPIError';
+      this.code = props.code || "ERROR";
+      this.name = "InfactoryAPIError";
       this.requestId = props.requestId;
       this.details = props.details;
     }
@@ -29,17 +35,17 @@ vi.mock("@infactory/infactory-ts", async () => {
         code: this.code,
         message: this.message,
         requestId: this.requestId,
-        details: this.details
+        details: this.details,
       };
     }
   }
-  
+
   return {
     isReadableStream: vi.fn(),
     processStreamToApiResponse: vi.fn(),
     // Add other SDK exports as needed
     ApiResponse: class {},
-    InfactoryAPIError: MockInfactoryAPIError
+    InfactoryAPIError: MockInfactoryAPIError,
   };
 });
 
@@ -67,12 +73,19 @@ describe("formatResponse", () => {
   });
 
   it("should format error response with message", async () => {
-    const mockError = { 
+    const mockError = {
       message: "Test error message",
       status: 500,
       code: "ERROR",
       name: "InfactoryAPIError",
-      toJSON: () => ({ name: "InfactoryAPIError", status: 500, code: "ERROR", message: "Test error message", requestId: undefined, details: undefined })
+      toJSON: () => ({
+        name: "InfactoryAPIError",
+        status: 500,
+        code: "ERROR",
+        message: "Test error message",
+        requestId: undefined,
+        details: undefined,
+      }),
     };
     const mockResponse = { data: null, error: mockError };
 
@@ -88,13 +101,13 @@ describe("formatResponse", () => {
       code: "ERROR",
       name: "InfactoryAPIError",
       details: { code: "NOT_FOUND", resource: "project" },
-      toJSON: () => ({ 
-        name: "InfactoryAPIError", 
-        status: 500, 
-        code: "ERROR", 
+      toJSON: () => ({
+        name: "InfactoryAPIError",
+        status: 500,
+        code: "ERROR",
         message: "Test error message",
-        details: { code: "NOT_FOUND", resource: "project" }
-      })
+        details: { code: "NOT_FOUND", resource: "project" },
+      }),
     };
     const mockResponse = { data: null, error: mockError };
 
@@ -110,7 +123,14 @@ describe("formatResponse", () => {
       status: 404,
       code: "404",
       name: "InfactoryAPIError",
-      toJSON: () => ({ name: "InfactoryAPIError", status: 404, code: "404", message: "", requestId: undefined, details: undefined })
+      toJSON: () => ({
+        name: "InfactoryAPIError",
+        status: 404,
+        code: "404",
+        message: "",
+        requestId: undefined,
+        details: undefined,
+      }),
     };
     const mockResponse = { data: null, error: mockError };
 
@@ -143,14 +163,14 @@ describe("formatResponse", () => {
       status: 500,
       code: "STREAM_ERROR",
       name: "InfactoryAPIError",
-      toJSON: () => ({ 
-        name: "InfactoryAPIError", 
-        status: 500, 
-        code: "STREAM_ERROR", 
+      toJSON: () => ({
+        name: "InfactoryAPIError",
+        status: 500,
+        code: "STREAM_ERROR",
         message: "Stream processing error",
         requestId: undefined,
-        details: undefined
-      })
+        details: undefined,
+      }),
     };
 
     vi.mocked(sdk.isReadableStream).mockReturnValue(true);
@@ -163,7 +183,7 @@ describe("formatResponse", () => {
 
     expect(sdk.isReadableStream).toHaveBeenCalledWith(mockStream);
     expect(sdk.processStreamToApiResponse).toHaveBeenCalledWith(mockStream);
-    expect(result).toBe(`Error: ${mockError.message}`);
+    expect(result).toBe(`{"error":{"message":"Stream processing error","details":""}}`);
   });
 
   it("should handle exception during stream processing", async () => {
