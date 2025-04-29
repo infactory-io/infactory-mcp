@@ -1,24 +1,8 @@
 import {
-  InfactoryClient,
   ApiResponse,
   isReadableStream,
   processStreamToApiResponse,
 } from "@infactory/infactory-ts";
-
-// Initialize Infactory client
-export function getClient(): InfactoryClient {
-  const apiKey = process.env.NF_API_KEY;
-  if (!apiKey) {
-    throw new Error("NF_API_KEY environment variable is required");
-  }
-
-  const baseURL = process.env.NF_BASE_URL || "https://api.infactory.ai";
-
-  return new InfactoryClient({
-    apiKey,
-    baseURL,
-  });
-}
 
 export async function formatResponse<T>(
   response: ApiResponse<T> | ReadableStream<Uint8Array>,
@@ -82,64 +66,4 @@ export async function formatResponse<T>(
     }
   }
   return JSON.stringify(response.data ?? null, null, 2);
-}
-
-// Project handlers
-export async function listProjectsHandler(_args: any, _extra: any) {
-  const client = getClient();
-  const response = await client.projects.getProjects();
-  return { content: [{ type: "text", text: await formatResponse(response) }] };
-}
-
-export async function getProjectHandler({
-  project_id,
-}: {
-  project_id: string;
-}) {
-  const client = getClient();
-  const response = await client.projects.getProject(project_id);
-  return { content: [{ type: "text", text: await formatResponse(response) }] };
-}
-
-export async function createProjectHandler({
-  name,
-  description,
-  team_id,
-}: {
-  name: string;
-  description?: string;
-  team_id: string;
-}) {
-  const client = getClient();
-  const response = await client.projects.createProject({
-    name,
-    description,
-    teamId: team_id, // SDK expects camelCase teamId
-  });
-  return { content: [{ type: "text", text: await formatResponse(response) }] };
-}
-
-// User handlers
-export async function getCurrentUserHandler(_args: any, _extra: any) {
-  const client = getClient();
-  const response = await client.users.getCurrentUser();
-  return { content: [{ type: "text", text: await formatResponse(response) }] };
-}
-
-// Query program handlers
-export async function executeQueryProgramHandler({
-  queryprogram_id,
-  input_data,
-}: {
-  queryprogram_id: string;
-  input_data?: any;
-}) {
-  const client = getClient();
-  const response = await client.queryPrograms.executeQueryProgram(
-    queryprogram_id,
-    input_data, // Pass input_data directly as parameters
-  );
-  return {
-    content: [{ type: "text", text: await formatResponse(response) }],
-  };
 }
