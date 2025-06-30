@@ -7,6 +7,7 @@ import {
   ApiResponse,
   isReadableStream,
   processStreamToApiResponse,
+  CreateDatasourceParams,
 } from "@infactory/infactory-ts";
 import { z } from "zod";
 
@@ -133,7 +134,7 @@ server.tool(
   },
   async ({ project_id, name, description, team_id }) => {
     const client = getClient();
-    const response = await client.projects.updateProject(project_id, team_id, {
+    const response = await client.projects.updateProject(project_id, {
       name,
       description,
     });
@@ -558,12 +559,69 @@ server.tool(
   },
 );
 
+// --- NEW CONNECT TOOL ---
 server.tool(
-  "get_project_coverage",
-  { project_id: z.string().describe("Project ID to get coverage for") },
-  async ({ project_id }) => {
+  "connect",
+  "Connects a new data source (CSV, API, or Database) to a project by creating a datasource entry.",
+  {
+    project_id: z
+      .string()
+      .describe("The ID of the project to connect the data source to."),
+    type: z
+      .enum(["csv", "api", "database"])
+      .describe("The type of data source to connect (csv, api, or database)."),
+    name: z.string().describe("A descriptive name for the new data source."),
+    uri: z
+      .string()
+      .optional()
+      .describe(
+        "Connection details. For 'database': connection string. For 'api': base URL. For 'csv': URL or file path to the CSV file.",
+      ),
+    // config: z.string().optional().describe("Optional JSON string containing specific configuration (e.g., API headers, database details). Structure varies by type."), // Revisit if dataSourceConfig is confirmed for create
+    // credentials_id: z.string().optional().describe("Optional ID of stored credentials to use (if applicable).") // Revisit if supported directly
+  },
+  async ({ project_id, type, name, uri /*, config, credentials_id */ }) => {
     const client = getClient();
-    const response = await client.queryPrograms.getCoverage(project_id);
+
+    // Prepare parameters for the SDK call using the CreateDatasourceParams type
+    const datasourceParams: CreateDatasourceParams = {
+      projectId: project_id,
+      name: name,
+      type: type,
+    };
+
+    // Add URI if provided
+    if (uri) {
+      datasourceParams.uri = uri;
+    }
+
+    // TODO: Handle config and credentials_id if/when supported by createDatasource SDK method
+    // let parsedConfig: any;
+    // if (config) {
+    //   try {
+    //     parsedConfig = JSON.parse(config);
+    //     // Assuming the SDK might accept a 'dataSourceConfig' field based on test code
+    //     (datasourceParams as any).dataSourceConfig = parsedConfig;
+    //   } catch (e) {
+    //     return { content: [{ type: "text", text: `Error: Invalid JSON in config parameter: ${e instanceof Error ? e.message : String(e)}` }] };
+    //   }
+    // }
+    // if (credentials_id) {
+    //   // How credentials are linked during creation needs clarification in the SDK/API.
+    //   // For now, we won't pass it directly unless the type explicitly supports it.
+    //   // (datasourceParams as any).credentialsId = credentials_id;
+    //   console.warn("Passing credentials_id during datasource creation is not explicitly supported by the current SDK type definition. It might be handled implicitly by the API based on URI or config.");
+    // }
+
+    console.error(
+      `Attempting to create datasource with params: ${JSON.stringify(datasourceParams)}`,
+    ); // Log params
+
+    // Call the SDK method to create the datasource
+    const response =
+      await client.datasources.createDatasource(datasourceParams);
+
+    // Format and return the response
     return {
       content: [{ type: "text", text: await formatResponse(response) }],
     };
@@ -598,7 +656,6 @@ server.tool(
     };
   },
 );
-
 
 server.tool(
   "rename_datasource",
@@ -901,9 +958,7 @@ server.tool(
   {
     project_id: z.string().describe("Project ID to associate the API with"),
     name: z.string().describe("Name for the API"),
-    base_path: z
-      .string()
-      .describe("Base path for the API (e.g., 'my-service')"),
+    slug: z.string().describe("Slug for the API (e.g., 'my-service')"),
     version: z.string().describe("API version (e.g., 'v1')"),
     description: z.string().optional().describe("API description"),
   },
@@ -912,7 +967,7 @@ server.tool(
     const response = await client.apis.createApi({
       projectId: params.project_id,
       name: params.name,
-      basePath: params.base_path,
+      slug: params.slug,
       version: params.version,
       description: params.description,
     });

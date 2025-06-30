@@ -140,8 +140,8 @@ describe("Infactory MCP Server E2E", () => {
     expect(response.id).toBe(3);
     expect(response.result).toBeUndefined();
     expect(response.error).toBeDefined();
-    expect(response.error.code).toBe(-32601); // Method not found
-    expect(response.error.message).toContain("Tool not found");
+    expect(response.error.code).toBe(-32602); // Method not found
+    expect(response.error.message).toContain("non_existent_tool");
   });
 
   // Additional test for a tool with arguments
