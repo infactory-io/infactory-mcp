@@ -1,6 +1,6 @@
 {
   "name": "@infactory/infactory-mcp",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "type": "module",
   "description": "Infactory MCP package",
   "main": "dist/index.js",
