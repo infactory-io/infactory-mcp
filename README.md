@@ -1,145 +1,79 @@
-# Infactory Quickstart MCP Server
+# Infactory MCP Server - Quickstart
 
-This server provides a comprehensive set of tools to interact with the Infactory API, enabling the entire workflow described in the official Quickstart guide. It allows an AI assistant to manage projects, handle data, build and deploy queries, and use conversational AI features programmatically.
+An MCP (Model Context Protocol) server that enables seamless interaction with the Infactory API. Designed for integration with Claude, VS Code, Cursor, and other MCP-compatible tools, this server supports the full Infactory workflow—from data upload and query generation to deployment and conversational interaction.
 
-This implementation uses the latest `@modelcontextprotocol/sdk` for robust and modern MCP server development.
+This implementation uses the latest `@modelcontextprotocol/sdk` for robust MCP server development.
 
-## Features
+---
 
-- **Project Management**: Create, list, and delete projects.
-- **Data Handling**: Upload CSV files as datasources and monitor their status.
-- **AI-Powered Building**: Autogenerate queries from data or create them from natural language.
-- **Deployment**: Publish query programs as live, callable REST API endpoints.
-- **Execution**: Run queries and call deployed APIs directly.
-- **Conversational AI**: Manage and interact with "Explore" chat sessions.
+## 🚀 Features
 
-## Setup and Configuration
+### Project & User Management
 
-### 1. Installation
+- Create, list, and delete projects
+- Retrieve current user profile
 
-```bash
-# Navigate to the server directory
-cd infactory-quickstart-mcp-server
+### Data Handling
 
-# Install dependencies
-npm install
-```
+- Upload CSVs as datasources
+- Check datasource processing status
+- Delete datasources
 
-### 2. Environment Variables
+### Query Programs
 
-Create a `.env` file in the `infactory-quickstart-mcp-server` directory and add your Infactory API key and base URL:
-
-```NF_API_KEY="YOUR_INFACTORY_API_KEY"
-NF_BASE_URL="https://api.infactory.ai"
-```
-
-- `NF_API_KEY`: **Required**. Your personal API key for the Infactory platform.
-- `NF_BASE_URL`: **Optional**. The base URL for the Infactory API. Defaults to `https://api.infactory.ai`.
-
-### 3. Build the Server
-
-Compile the TypeScript source code into JavaScript:
-
-```bash
-npm run build
-```
-
-## Running the Server
-
-You can run the server directly or configure it with an MCP client.
-
-### Direct Execution
-
-To start the server and have it listen on standard I/O:
-
-```bash
-npm run start
-```
-
-### Configuration with an MCP Client (e.g., VS Code, Claude Desktop)
-
-Add the following configuration to your MCP client's settings (e.g., `.vscode/mcp.json` or `claude_desktop_config.json`). Make sure to replace `/path/to/infactory-quickstart-mcp-server` with the actual absolute path to the server's directory on your machine.
-
-```json
-{
-  "mcp": {
-    "servers": {
-      "infactory": {
-        "command": "node",
-        "args": ["/path/to/infactory-mcp/dist/index.js"]
-      }
-    }
-  }
-}
-```
-
-## Available Tools
-
-The server exposes the following tools, which correspond to the steps in the Quickstart guide:
-
-### User & Project Management
-
-- `get_current_user`: Fetches the current user's profile.
-- `create_project`: Creates a new project.
-- `list_projects`: Lists available projects.
-- `delete_project`: Deletes a specified project.
-
-### Data Management
-
-- `upload_csv`: Uploads a local CSV file as a new datasource.
-- `get_datasource_status`: Checks the processing status of a datasource.
-- `delete_datasource`: Deletes a datasource.
-
-### Query Building
-
-- `autogenerate_queries`: Creates starter queries based on a project's data.
-- `create_query_from_nl`: Generates a query program from a natural language question.
-- `list_query_programs`: Lists all query programs in a project.
-
-### Query Execution & Deployment
-
-- `run_query_program`: Executes a query program.
-- `publish_query_program`: Deploys a query as a live API endpoint.
+- Autogenerate queries based on data
+- Create query programs from natural language
+- List and execute query programs
+- Publish query programs as REST APIs
 
 ### API Management
 
-- `list_apis`: Lists all deployed APIs in a project.
-- `list_api_endpoints`: Lists the endpoints for a specific API.
-- `call_live_api`: Makes a call to a deployed API endpoint.
+- List deployed APIs and their endpoints
+- Call live API endpoints
 
-### Chat & Explore
+### Conversational AI
 
-- `create_conversation`: Starts a new conversational "Explore" session.
-- `send_chat_message`: Sends a message in an existing conversation.
-- `get_conversation_graph`: Retrieves the interaction graph of a conversation.
+- Manage "Explore" chat sessions
+- Send chat messages
+- Retrieve conversation graphs
 
-# Infactory MCP Server
+---
 
-An MCP (Model Context Protocol) server for interacting with Infactory APIs using Claude and other LLMs. This server enables language models to access and manipulate data in your Infactory environment.
-
-## Features
-
-- **Project Management**: List, retrieve, and create projects
-- **Query Programs**: List and execute query programs
-- **Datasources**: List, retrieve, and create datasources
-- **User & Team Management**: Get current user information and list teams
-
-## Getting Started
+## 🛠️ Setup & Installation
 
 ### Prerequisites
 
+- Node.js 18+
 - An Infactory API key
-- Node.js 18+ (for local installation)
 
-### Installation
+### Option 1: Clone and Build Locally
 
-#### Using NPX (Recommended)
+```bash
+git clone https://github.com/infactory-io/infactory-mcp.git
+cd infactory-mcp
+npm install
+npm run build
+````
+
+Start the server:
+
+```bash
+npm start
+```
+
+Or for debugging:
+
+```bash
+npx @modelcontextprotocol/inspector -e "NF_API_KEY=$NF_API_KEY" node -- dist/index.js
+```
+
+### Option 2: NPX (Recommended)
 
 ```bash
 npx -y @infactory/infactory-mcp
 ```
 
-#### Using Docker
+### Option 3: Docker
 
 ```bash
 docker run -i --rm \
@@ -147,20 +81,54 @@ docker run -i --rm \
   @infactory/infactory-mcp
 ```
 
-### Environment Variables
+---
 
-- `NF_API_KEY` (required): Your Infactory API key
-- `NF_BASE_URL` (optional): Custom API endpoint if using a different environment
+## ⚙️ Environment Configuration
 
-## Usage with Claude Desktop + Windsurf + Cursor
+Create a `.env` file or define variables in your MCP config:
 
-Here is the likely location of your MCP configuration file:
+```bash
+NF_API_KEY="YOUR_INFACTORY_API_KEY"      # Required
+NF_BASE_URL="https://api.infactory.ai"   # Optional (defaults to official API)
+```
 
-- Claude Desktop - Add this to your `claude_desktop_config.json`:
-- Windsurf - Add this to your `~/.codeium/windsurf/mcp_config.json`:
-- Cursor - Add this to your `~/.cursor/mcp.json`:
+---
 
-Add this to your MCP configuration:
+## 🧠 Example Prompts
+
+You can now interact with Infactory via LLMs like Claude using prompts like:
+
+- "Show me all my Infactory projects"
+- "Upload a CSV and generate queries from it"
+- "Deploy query program qp-789def as an API"
+- "List endpoints for deployed API api-123"
+- "Start an Explore chat about revenue metrics"
+
+---
+
+## 🧩 MCP Client Integration
+
+To integrate with Claude Desktop, Cursor, or Windsurf, update your MCP config file (`.mcp.json`, `claude_desktop_config.json`, etc.):
+
+### Local Build
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "infactory": {
+        "command": "node",
+        "args": ["/absolute/path/to/infactory-mcp/dist/index.js"],
+        "env": {
+          "NF_API_KEY": "nf-************************"
+        }
+      }
+    }
+  }
+}
+```
+
+### NPX Version
 
 ```json
 {
@@ -177,70 +145,32 @@ Add this to your MCP configuration:
 }
 ```
 
-```json
-{
-  "version": "0.1",
-  "mcpServers": {
-    "infactory-mcp": {
-      "command": "npx",
-      "args": ["-y", "@infactory/infactory-mcp@0.6.1"],
-      "env": {
-        "NF_API_KEY": "nf-2FEUOhBAeMOtzyTqK1VEMFc7D-AMsL89gQOTsDURJn0",
-        "NF_BASE_URL": "http://localhost:8000"
-      }
-    }
-  }
-}
-```
+---
 
-Or if you are doing development:
+## 📚 Instructional Resources
 
-```json
-{
-  "version": "0.1",
-  "mcpServers": {
-    "infactory-mcp": {
-      "command": "node",
-      "args": ["FULL_PATH_TO/infactory-mcp/dist/index.js"],
-      "env": {
-        "NF_API_KEY": "nf-************************"
-      }
-    }
-  }
-}
-```
+The server provides built-in guides for AI agents.
 
-## Example Prompts
+- **`quickstart-csv`**
 
-Once your MCP server is configured, you can use prompts like these with Claude:
+  - **URI**: `infactory://guides/quickstart-csv`
+  - **Description**: Markdown guide for uploading CSVs, waiting for processing, generating and running queries, and cleaning up.
 
-- "Show me a list of all my Infactory projects"
-- "Get the details for project proj-123abc"
-- "Create a new project called 'Data Analysis' in team team-456xyz"
-- "List all query programs in project proj-123abc"
-- "Execute query program qp-789def"
-- "Tell me about myself (my user account)"
+---
 
-## Building from Source
+## 🛠 Available Tools Summary
 
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/mcp-server-infactory.git
-cd mcp-server-infactory
+| Category                   | Tools                                                                   |
+| -------------------------- | ----------------------------------------------------------------------- |
+| **User/Project**           | `get_current_user`, `create_project`, `list_projects`, `delete_project` |
+| **Data**                   | `upload_csv`, `get_datasource_status`, `delete_datasource`              |
+| **Query Building**         | `autogenerate_queries`, `create_query_from_nl`, `list_query_programs`   |
+| **Execution & Deployment** | `run_query_program`, `publish_query_program`                            |
+| **API**                    | `list_apis`, `list_api_endpoints`, `call_live_api`                      |
+| **Chat/Explore**           | `create_conversation`, `send_chat_message`, `get_conversation_graph`    |
 
-# Install dependencies
-npm install
+---
 
-# Build
-npm run build
-
-# Start the server
-npm start
-
-# Optional - start inspector (for debugging)
-npx @modelcontextprotocol/inspector -e "NF_API_KEY=$NF_API_KEY" node -- dist/index.js
-```
-
-## License
+## 📄 License
 
 MIT License

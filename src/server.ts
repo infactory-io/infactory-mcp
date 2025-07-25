@@ -1,8 +1,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import { CallToolResult, ReadResourceResult } from "@modelcontextprotocol/sdk/types.js";
 import { InfactoryClient } from "@infactory/infactory-ts";
 import { z } from "zod";
 import * as dotenv from "dotenv";
+import { QUICKSTART_CSV_GUIDE } from "./resources/quickstart_csv.js";
 
 // --- Zod Schemas for Tool Inputs ---
 
@@ -170,6 +171,27 @@ export const createServer = () => {
     return userResponse.data.userTeams[0].teamId;
   };
 
+
+  // --- Resource Definition ---
+  
+  server.registerResource(
+    "quickstart-csv",
+    "infactory://guides/quickstart-csv",
+    {
+      title: "Guide: CSV Upload and Analysis",
+      description: "A step-by-step guide for an AI agent to upload and analyze a CSV file using this server's tools.",
+      mimeType: "text/markdown"
+    },
+    async (uri): Promise<ReadResourceResult> => {
+      return {
+        contents: [{
+          uri: uri.href,
+          text: QUICKSTART_CSV_GUIDE
+        }]
+      };
+    }
+  );
+  
   // --- Tool Definitions ---
 
   // User & Project Management
