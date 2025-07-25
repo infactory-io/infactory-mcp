@@ -1,3 +1,118 @@
+# Infactory Quickstart MCP Server
+
+This server provides a comprehensive set of tools to interact with the Infactory API, enabling the entire workflow described in the official Quickstart guide. It allows an AI assistant to manage projects, handle data, build and deploy queries, and use conversational AI features programmatically.
+
+This implementation uses the latest `@modelcontextprotocol/sdk` for robust and modern MCP server development.
+
+## Features
+
+- **Project Management**: Create, list, and delete projects.
+- **Data Handling**: Upload CSV files as datasources and monitor their status.
+- **AI-Powered Building**: Autogenerate queries from data or create them from natural language.
+- **Deployment**: Publish query programs as live, callable REST API endpoints.
+- **Execution**: Run queries and call deployed APIs directly.
+- **Conversational AI**: Manage and interact with "Explore" chat sessions.
+
+## Setup and Configuration
+
+### 1. Installation
+
+```bash
+# Navigate to the server directory
+cd infactory-quickstart-mcp-server
+
+# Install dependencies
+npm install
+```
+
+### 2. Environment Variables
+
+Create a `.env` file in the `infactory-quickstart-mcp-server` directory and add your Infactory API key and base URL:
+
+```NF_API_KEY="YOUR_INFACTORY_API_KEY"
+NF_BASE_URL="https://api.infactory.ai"
+```
+
+- `NF_API_KEY`: **Required**. Your personal API key for the Infactory platform.
+- `NF_BASE_URL`: **Optional**. The base URL for the Infactory API. Defaults to `https://api.infactory.ai`.
+
+### 3. Build the Server
+
+Compile the TypeScript source code into JavaScript:
+
+```bash
+npm run build
+```
+
+## Running the Server
+
+You can run the server directly or configure it with an MCP client.
+
+### Direct Execution
+
+To start the server and have it listen on standard I/O:
+
+```bash
+npm run start
+```
+
+### Configuration with an MCP Client (e.g., VS Code, Claude Desktop)
+
+Add the following configuration to your MCP client's settings (e.g., `.vscode/mcp.json` or `claude_desktop_config.json`). Make sure to replace `/path/to/infactory-quickstart-mcp-server` with the actual absolute path to the server's directory on your machine.
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "infactory": {
+        "command": "node",
+        "args": ["/path/to/infactory-mcp/dist/index.js"]
+      }
+    }
+  }
+}
+```
+
+## Available Tools
+
+The server exposes the following tools, which correspond to the steps in the Quickstart guide:
+
+### User & Project Management
+
+- `get_current_user`: Fetches the current user's profile.
+- `create_project`: Creates a new project.
+- `list_projects`: Lists available projects.
+- `delete_project`: Deletes a specified project.
+
+### Data Management
+
+- `upload_csv`: Uploads a local CSV file as a new datasource.
+- `get_datasource_status`: Checks the processing status of a datasource.
+- `delete_datasource`: Deletes a datasource.
+
+### Query Building
+
+- `autogenerate_queries`: Creates starter queries based on a project's data.
+- `create_query_from_nl`: Generates a query program from a natural language question.
+- `list_query_programs`: Lists all query programs in a project.
+
+### Query Execution & Deployment
+
+- `run_query_program`: Executes a query program.
+- `publish_query_program`: Deploys a query as a live API endpoint.
+
+### API Management
+
+- `list_apis`: Lists all deployed APIs in a project.
+- `list_api_endpoints`: Lists the endpoints for a specific API.
+- `call_live_api`: Makes a call to a deployed API endpoint.
+
+### Chat & Explore
+
+- `create_conversation`: Starts a new conversational "Explore" session.
+- `send_chat_message`: Sends a message in an existing conversation.
+- `get_conversation_graph`: Retrieves the interaction graph of a conversation.
+
 # Infactory MCP Server
 
 An MCP (Model Context Protocol) server for interacting with Infactory APIs using Claude and other LLMs. This server enables language models to access and manipulate data in your Infactory environment.
@@ -36,65 +151,6 @@ docker run -i --rm \
 
 - `NF_API_KEY` (required): Your Infactory API key
 - `NF_BASE_URL` (optional): Custom API endpoint if using a different environment
-
-## Available Tools
-
-### Project Tools
-
-- **list_projects**: List all available projects
-
-  - No parameters required
-
-- **get_project**: Get details of a specific project
-
-  - Parameters:
-    - `project_id` (string): ID of the project to retrieve
-
-- **create_project**: Create a new project
-  - Parameters:
-    - `name` (string): Project name
-    - `description` (string, optional): Project description
-    - `team_id` (string): Team ID
-
-### Query Program Tools
-
-- **list_query_programs**: List query programs in a project
-
-  - Parameters:
-    - `project_id` (string): ID of the project
-
-- **execute_query_program**: Execute a query program
-  - Parameters:
-    - `queryprogram_id` (string): ID of the query program to execute
-    - `input_data` (object, optional): Input data for the query program
-
-### Datasource Tools
-
-- **list_datasources**: List datasources in a project
-
-  - Parameters:
-    - `project_id` (string): ID of the project
-
-- **get_datasource**: Get details of a specific datasource
-
-  - Parameters:
-    - `datasource_id` (string): ID of the datasource
-
-- **create_datasource**: Create a new datasource
-  - Parameters:
-    - `name` (string): Datasource name
-    - `project_id` (string): ID of the project
-    - `type` (string): Datasource type
-
-### User and Team Tools
-
-- **get_current_user**: Get information about the current user
-
-  - No parameters required
-
-- **list_teams**: List teams in an organization
-  - Parameters:
-    - `organization_id` (string): ID of the organization
 
 ## Usage with Claude Desktop + Windsurf + Cursor
 
