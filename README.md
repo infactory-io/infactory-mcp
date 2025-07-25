@@ -1,176 +1,250 @@
-# Infactory MCP Server - Quickstart
+# Infactory MCP Desktop Extension (DXT)
 
-An MCP (Model Context Protocol) server that enables seamless interaction with the Infactory API. Designed for integration with Claude, VS Code, Cursor, and other MCP-compatible tools, this server supports the full Infactory workflow—from data upload and query generation to deployment and conversational interaction.
+A Desktop Extension (DXT) that provides seamless access to Infactory's data analysis and API generation capabilities through Claude Desktop and other MCP clients.
 
-This implementation uses the latest `@modelcontextprotocol/sdk` for robust MCP server development.
+## Overview
 
----
+Infactory transforms articles, data, and archives into AI-ready formats that can be safely queried, cited and licensed. This DXT extension provides a complete workflow from data upload to API deployment.
 
-## 🚀 Features
+## Features
 
-### Project & User Management
+- **Data Management**: Upload CSV files and manage datasources
+- **Query Generation**: Auto-generate queries or create custom ones from natural language
+- **API Deployment**: Publish query programs as live API endpoints
+- **Chat Integration**: Explore data through conversational interfaces
+- **Project Management**: Create and manage projects and teams
 
-- Create, list, and delete projects
-- Retrieve current user profile
+## Installation
 
-### Data Handling
+### For Claude Desktop Users
 
-- Upload CSVs as datasources
-- Check datasource processing status
-- Delete datasources
+1. Download the `.dxt` file from the releases
+2. Open Claude Desktop
+3. Go to Settings > Extensions
+4. Click "Install from file" and select the `.dxt` file
+5. Configure your Infactory API key in the extension settings (see Configuration section below)
 
-### Query Programs
+### For Developers
 
-- Autogenerate queries based on data
-- Create query programs from natural language
-- List and execute query programs
-- Publish query programs as REST APIs
+```bash
+# Clone the repository
+git clone https://github.com/infactory/infactory-mcp.git
+cd infactory-mcp
 
-### API Management
+# Install dependencies
+npm install
 
-- List deployed APIs and their endpoints
-- Call live API endpoints
+# Build the extension
+npm run build
 
-### Conversational AI
+# Package as DXT
+npm run dxt:pack
+```
 
-- Manage "Explore" chat sessions
-- Send chat messages
-- Retrieve conversation graphs
+## Configuration
 
----
+The extension requires configuration through the DXT user interface. After installation, you'll need to configure the following settings:
 
-## 🛠️ Setup & Installation
+### Required Settings
+
+- **Infactory API Key**: Your Infactory API key (get this from your [Infactory dashboard](https://app.infactory.ai))
+  - This is a sensitive field that will be stored securely
+  - Required for all API operations
+
+### Optional Settings
+
+- **Infactory API Base URL**: API base URL (defaults to `https://api.infactory.ai`)
+  - Only change this if you're using a custom Infactory instance
+  - Optional field with a sensible default
+
+## Usage
+
+### Quick Start Workflow
+
+1. **Get Your Team ID**
+   ```
+   get_current_user
+   ```
+
+2. **Create a Project**
+   ```
+   create_project {"name": "My Analysis Project", "teamId": "team-..."}
+   ```
+
+3. **Upload CSV Data**
+   ```
+   upload_csv {"projectId": "proj-...", "filePath": "/path/to/data.csv", "datasourceName": "My Data"}
+   ```
+
+4. **Check Processing Status**
+   ```
+   get_datasource_status {"datasourceId": "ds-..."}
+   ```
+
+5. **Generate Queries**
+   ```
+   autogenerate_queries {"projectId": "proj-...", "count": 3}
+   ```
+
+6. **Run a Query**
+   ```
+   run_query_program {"projectId": "proj-...", "queryProgramId": "qp-..."}
+   ```
+
+7. **Create Custom Query**
+   ```
+   create_query_from_nl {"projectId": "proj-...", "question": "What is the average value by category?"}
+   ```
+
+8. **Publish as API**
+   ```
+   publish_query_program {"queryProgramId": "qp-..."}
+   ```
+
+### Available Tools
+
+#### User & Project Management
+- `get_current_user` - Get user profile and team information
+- `create_project` - Create a new project
+- `list_projects` - List all projects in a team
+- `delete_project` - Delete a project
+
+#### Data Management
+- `upload_csv` - Upload a CSV file to create a datasource
+- `get_datasource_status` - Check datasource processing status
+- `delete_datasource` - Delete a datasource
+
+#### Query Building
+- `autogenerate_queries` - Generate starter queries based on data
+- `create_query_from_nl` - Create query from natural language
+- `list_query_programs` - List all query programs in a project
+
+#### Query Execution
+- `run_query_program` - Execute a query program
+- `publish_query_program` - Publish query as live API
+
+#### API Management
+- `list_apis` - List deployed APIs
+- `list_api_endpoints` - List API endpoints
+- `call_live_api` - Call a live API endpoint
+
+#### Chat & Explore
+- `create_conversation` - Start a chat session
+- `send_chat_message` - Send a message in chat
+- `get_conversation_graph` - Get conversation interaction graph
+
+## Development
 
 ### Prerequisites
 
 - Node.js 18+
-- An Infactory API key
+- npm or yarn
+- TypeScript
 
-### Option 1: Clone and Build Locally
+### Setup
 
 ```bash
-git clone https://github.com/infactory-io/infactory-mcp.git
-cd infactory-mcp
+# Install dependencies
 npm install
+
+# Build the project
 npm run build
-````
 
-Start the server:
+# Run in development mode
+npm run dev
+
+# Run tests
+npm test
+
+# Validate DXT manifest
+npm run dxt:validate
+```
+
+### Testing with MCP Inspector
 
 ```bash
-npm start
+# Run the MCP inspector to test tools
+npm run inspector
 ```
 
-Or for debugging:
+### Building for Distribution
 
 ```bash
-npx @modelcontextprotocol/inspector -e "NF_API_KEY=$NF_API_KEY" node -- dist/index.js
+# Build and package as DXT
+npm run dxt:pack
 ```
 
-### Option 2: NPX (Recommended)
+This creates a `.dxt` file that can be distributed and installed in Claude Desktop.
+
+## Error Handling
+
+The extension includes comprehensive error handling:
+
+- **Timeout Management**: All API calls have appropriate timeouts
+- **Configuration Validation**: Ensures required settings are present
+- **Graceful Degradation**: Handles network and API errors gracefully
+- **Detailed Logging**: Provides clear error messages for debugging
+
+## Security
+
+- API keys are stored securely using the host's secure storage
+- Sensitive configuration fields are marked appropriately
+- All API calls use HTTPS with proper authentication
+
+## Troubleshooting
+
+### Common Issues
+
+1. **"NF_API_KEY not set"**
+   - Ensure you've configured the "Infactory API Key" in the extension settings
+   - Verify the key is valid in your Infactory dashboard
+   - Check that the configuration was saved properly
+
+2. **"Could not get default team ID"**
+   - Check your API key permissions
+   - Ensure you have access to at least one team
+
+3. **File upload failures**
+   - Verify the file path exists and is accessible
+   - Check file size limits (typically 100MB)
+   - Ensure the file is a valid CSV
+
+4. **Query execution timeouts**
+   - Large datasets may take longer to process
+   - Consider breaking data into smaller chunks
+   - Check your Infactory plan limits
+
+### Debug Mode
+
+Enable debug logging by setting the `DEBUG` environment variable:
 
 ```bash
-npx -y @infactory/infactory-mcp
+DEBUG=* npm run dev
 ```
 
-### Option 3: Docker
+## Contributing
 
-```bash
-docker run -i --rm \
-  -e NF_API_KEY="your_api_key_here" \
-  @infactory/infactory-mcp
-```
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Submit a pull request
 
----
+## License
 
-## ⚙️ Environment Configuration
+MIT License - see LICENSE file for details.
 
-Create a `.env` file or define variables in your MCP config:
+## Support
 
-```bash
-NF_API_KEY="YOUR_INFACTORY_API_KEY"      # Required
-NF_BASE_URL="https://api.infactory.ai"   # Optional (defaults to official API)
-```
+- **Documentation**: [https://docs.infactory.ai](https://docs.infactory.ai)
+- **Issues**: [GitHub Issues](https://github.com/infactory/infactory-mcp/issues)
+- **Email**: [sean@infactory.ai](mailto:sean@infactory.ai)
 
----
+## Changelog
 
-## 🧠 Example Prompts
-
-You can now interact with Infactory via LLMs like Claude using prompts like:
-
-- "Show me all my Infactory projects"
-- "Upload a CSV and generate queries from it"
-- "Deploy query program qp-789def as an API"
-- "List endpoints for deployed API api-123"
-- "Start an Explore chat about revenue metrics"
-
----
-
-## 🧩 MCP Client Integration
-
-To integrate with Claude Desktop, Cursor, or Windsurf, update your MCP config file (`.mcp.json`, `claude_desktop_config.json`, etc.):
-
-### Local Build
-
-```json
-{
-  "mcp": {
-    "servers": {
-      "infactory": {
-        "command": "node",
-        "args": ["/absolute/path/to/infactory-mcp/dist/index.js"],
-        "env": {
-          "NF_API_KEY": "nf-************************"
-        }
-      }
-    }
-  }
-}
-```
-
-### NPX Version
-
-```json
-{
-  "version": "0.1",
-  "mcpServers": {
-    "infactory-mcp": {
-      "command": "npx",
-      "args": ["-y", "@infactory/infactory-mcp"],
-      "env": {
-        "NF_API_KEY": "nf-************************"
-      }
-    }
-  }
-}
-```
-
----
-
-## 📚 Instructional Resources
-
-The server provides built-in guides for AI agents.
-
-- **`quickstart-csv`**
-
-  - **URI**: `infactory://guides/quickstart-csv`
-  - **Description**: Markdown guide for uploading CSVs, waiting for processing, generating and running queries, and cleaning up.
-
----
-
-## 🛠 Available Tools Summary
-
-| Category                   | Tools                                                                   |
-| -------------------------- | ----------------------------------------------------------------------- |
-| **User/Project**           | `get_current_user`, `create_project`, `list_projects`, `delete_project` |
-| **Data**                   | `upload_csv`, `get_datasource_status`, `delete_datasource`              |
-| **Query Building**         | `autogenerate_queries`, `create_query_from_nl`, `list_query_programs`   |
-| **Execution & Deployment** | `run_query_program`, `publish_query_program`                            |
-| **API**                    | `list_apis`, `list_api_endpoints`, `call_live_api`                      |
-| **Chat/Explore**           | `create_conversation`, `send_chat_message`, `get_conversation_graph`    |
-
----
-
-## 📄 License
-
-MIT License
+### v0.8.0
+- Initial DXT release
+- Complete MCP server implementation
+- All core Infactory functionality
+- Comprehensive error handling and timeouts
+- DXT packaging and validation

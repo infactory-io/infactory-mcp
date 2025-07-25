@@ -1,6 +1,6 @@
 {
   "name": "@infactory/infactory-mcp",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "type": "module",
   "description": "MCP server that implements the Infactory Quickstart guide tools using the latest MCP SDK.",
   "homepage": "https://infactory.ai",
@@ -10,11 +10,13 @@
     "infactory-mcp-server": "dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "manifest.json"
   ],
   "scripts": {
+    "clean": "rm -rf dist",
     "build": "tsc && shx chmod +x dist/index.js",
-    "prepare": "npm run build",
+    "prepare": "npm run build && npm run dxt:pack",
     "watch": "tsc --watch",
     "start": "node dist/index.js",
     "dev": "tsx index.ts",
@@ -27,12 +29,22 @@
     "test:e2e": "vitest run --config vitest.e2e.config.ts",
     "lint": "prettier --check .",
     "lint:fix": "prettier --write .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "dxt:pack": "npm run build && dxt pack",
+    "dxt:validate": "dxt validate manifest.json"
   },
-  "keywords": [],
+  "keywords": [
+    "infactory",
+    "mcp",
+    "dxt",
+    "desktop-extension",
+    "data-analysis",
+    "api-generation"
+  ],
   "author": "Sean Kruzel <sean@infactory.ai>",
   "license": "MIT",
   "devDependencies": {
+    "@anthropic-ai/dxt": "^0.2.6",
     "@types/node": "^22.0.0",
     "@types/react": "^19.1.0",
     "@vitest/ui": "^3.1.2",

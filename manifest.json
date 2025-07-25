@@ -1,0 +1,151 @@
+{
+  "dxt_version": "0.1",
+  "name": "@infactory/infactory-mcp",
+  "display_name": "Infactory MCP - Make Your Content Easy to Query and Monetize",
+  "version": "0.8.0",
+  "description": "Infactory transforms articles, data, and archives into AI-ready formats that can be safely queried, cited and licensed. Stop getting scraped. Start getting paid.",
+  "long_description": "This Desktop Extension (DXT) provides seamless access to Infactory's data analysis and API generation capabilities. Upload CSV files, generate queries from natural language, and deploy live APIs. Complete workflow from data upload to API deployment with comprehensive error handling and security best practices.",
+  "author": {
+    "name": "Sean Kruzel",
+    "email": "sean@infactory.ai",
+    "url": "https://infactory.ai"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/infactory/infactory-mcp"
+  },
+  "homepage": "https://infactory.ai",
+  "documentation": "https://docs.infactory.ai/",
+  "support": "https://github.com/infactory/infactory-mcp/issues",
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/dist/index.js"
+      ],
+      "env": {
+        "NF_API_KEY": "${user_config.api_key}",
+        "NF_BASE_URL": "${user_config.base_url}"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Fetch the current authenticated user's profile to get team and organization info."
+    },
+    {
+      "name": "create_project",
+      "description": "Create a new project in a specified team."
+    },
+    {
+      "name": "list_projects",
+      "description": "List all projects for the user's default or a specified team."
+    },
+    {
+      "name": "delete_project",
+      "description": "Delete a project by its ID."
+    },
+    {
+      "name": "upload_csv",
+      "description": "Upload a CSV file to a project, creating a new datasource."
+    },
+    {
+      "name": "get_datasource_status",
+      "description": "Check the processing status of a datasource."
+    },
+    {
+      "name": "delete_datasource",
+      "description": "Delete a datasource by its ID."
+    },
+    {
+      "name": "autogenerate_queries",
+      "description": "Generate starter queries based on the data in a project."
+    },
+    {
+      "name": "create_query_from_nl",
+      "description": "Create a new query program from a natural language question."
+    },
+    {
+      "name": "list_query_programs",
+      "description": "List all query programs in a project."
+    },
+    {
+      "name": "run_query_program",
+      "description": "Execute a query program and get the results."
+    },
+    {
+      "name": "publish_query_program",
+      "description": "Publish a query program to make it available as a live API endpoint."
+    },
+    {
+      "name": "list_apis",
+      "description": "List all deployed APIs in a project."
+    },
+    {
+      "name": "list_api_endpoints",
+      "description": "List all endpoints for a specific deployed API."
+    },
+    {
+      "name": "call_live_api",
+      "description": "Call a live, deployed API endpoint."
+    },
+    {
+      "name": "create_conversation",
+      "description": "Start a new Explore chat session."
+    },
+    {
+      "name": "send_chat_message",
+      "description": "Send a message within an Explore chat session."
+    },
+    {
+      "name": "get_conversation_graph",
+      "description": "Retrieve the interaction graph for a conversation."
+    }
+  ],
+  "prompts": [
+    {
+      "name": "Guide: CSV Upload and Analysis",
+      "description": "A step-by-step guide for an AI agent to upload and analyze a CSV file using this server's tools.",
+      "text": "# Guide: CSV Upload, Analysis, and Querying with Infactory\n\nThis is a step-by-step guide to using the available tools to upload a CSV file, analyze its contents, and generate insights.\n\n## Step 1: Get Your Team ID\n\nFirst, you need to know which team to create your project in. This is required for project creation.\n\n**Tool Call:** `get_current_user`\n**Example:** `get_current_user`\n**Output:** Look for the `teamId` in the `userTeams` array from the response.\n\n## Step 2: Create a Project\n\nCreate a new project to house your data and queries. Use a descriptive name.\n\n**Tool Call:** `create_project`\n**Parameters:**\n- `name`: \"My CSV Analysis Project\"\n- `teamId`: (Use the `teamId` from Step 1)\n**Example:** `create_project {\"name\": \"My CSV Analysis Project\", \"teamId\": \"team-...\"}`\n**Output:** Note the `id` of the newly created project. This is your `projectId`.\n\n## Step 3: Upload Your CSV Data\n\nUpload your local CSV file. This will create a \"datasource\" in your project.\n\n**Tool Call:** `upload_csv`\n**Parameters:**\n- `projectId`: (Use the `projectId` from Step 2)\n- `filePath`: \"path/to/your/local/file.csv\"\n- `datasourceName`: \"My Stock Data\"\n**Example:** `upload_csv {\"projectId\": \"proj-...\", \"filePath\": \"/Users/claude/data/stocks.csv\", \"datasourceName\": \"Stock Prices CSV\"}`\n**Output:** Note the `id` of the new datasource. This is your `datasourceId`.\n\n## Step 4: Wait for Data Processing\n\nThe platform needs a moment to process your CSV and infer its schema. Poll the datasource status until it becomes \"ready\".\n\n**Tool Call:** `get_datasource_status`\n**Parameters:**\n- `datasourceId`: (Use the `datasourceId` from Step 3)\n**Example:** `get_datasource_status {\"datasourceId\": \"ds-...\"}`\n**Action:** Repeat this call every 5-10 seconds until the `status` field in the response is `\"ready\"`.\n\n## Step 5: Discover Insights with Autogenerated Queries\n\nNow that the data is ready, let the platform suggest some interesting questions to ask.\n\n**Tool Call:** `autogenerate_queries`\n**Parameters:**\n- `projectId`: (Use the `projectId` from Step 2)\n- `count`: 3 (optional, request a few questions)\n**Example:** `autogenerate_queries {\"projectId\": \"proj-...\"}`\n**Action:** Review the suggested queries. Pick one to run in the next step. Note its `id`.\n\n## Step 6: Run an Autogenerated Query\n\nExecute one of the queries generated in the previous step to see a sample analysis.\n\n**Tool Call:** `run_query_program`\n**Parameters:**\n- `projectId`: (Use the `projectId` from Step 2)\n- `queryProgramId`: (Use the `id` of a query from Step 5)\n**Example:** `run_query_program {\"projectId\": \"proj-...\", \"queryProgramId\": \"qp-...\"}`\n**Output:** Analyze the results to understand your data.\n\n## Step 7: Ask Your Own Question\n\nCreate a custom query program by asking a question in natural language.\n\n**Tool Call:** `create_query_from_nl`\n**Parameters:**\n- `projectId`: (Use the `projectId` from Step 2)\n- `question`: \"What was the highest price for each stock symbol?\"\n**Example:** `create_query_from_nl {\"projectId\": \"proj-...\", \"question\": \"What is the average trading volume per symbol?\"}`\n**Output:** This will create a new query program. Note its `id` for the next step.\n\n## Step 8: Run Your Custom Query\n\nExecute the custom query you just created.\n\n**Tool Call:** `run_query_program`\n**Parameters:**\n- `projectId`: (Use the `projectId` from Step 2)\n- `queryProgramId`: (Use the `id` of the query from Step 7)\n**Example:** `run_query_program {\"projectId\": \"proj-...\", \"queryProgramId\": \"qp-...\"}`\n\n## Step 9: Cleanup (Optional)\n\nOnce you are finished, you can remove the resources you created.\n\n**Tool Call:** `delete_datasource`\n**Example:** `delete_datasource {\"datasourceId\": \"ds-...\"}`\n\n**Tool Call:** `delete_project`\n**Example:** `delete_project {\"projectId\": \"proj-...\"}`"
+    }
+  ],
+  "keywords": [
+    "Infactory",
+    "MCP",
+    "Quickstart",
+    "CSV",
+    "Upload",
+    "Analysis",
+    "Querying",
+    "Data",
+    "API",
+    "Monetization"
+  ],
+  "license": "MIT",
+  "user_config": {
+    "api_key": {
+      "type": "string",
+      "title": "Infactory API Key",
+      "description": "Your Infactory API key. Get this from your Infactory dashboard at https://app.infactory.ai",
+      "sensitive": true,
+      "required": true
+    },
+    "base_url": {
+      "type": "string",
+      "title": "Infactory API Base URL",
+      "description": "Infactory API base URL (optional, defaults to https://api.infactory.ai)",
+      "default": "https://api.infactory.ai",
+      "required": false
+    }
+  },
+  "compatibility": {
+    "claude_desktop": ">=0.10.0",
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  }
+}
