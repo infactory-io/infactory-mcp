@@ -18,7 +18,7 @@ Infactory transforms articles, data, and archives into AI-ready formats that can
 
 ### For Claude Desktop Users
 
-1. Download the `.dxt` file from the releases
+1. [Download the DXT file](https://github.com/infactory-io/infactory-mcp/raw/refs/heads/main/infactory-mcp.dxt)
 2. Open Claude Desktop
 3. Go to Settings > Extensions
 4. Click "Install from file" and select the `.dxt` file
@@ -41,6 +41,18 @@ npm run build
 npm run dxt:pack
 ```
 
+### Installing via NPM
+
+The package is also available on npm as `@infactory/infactory-mcp`:
+
+```bash
+# Install globally
+npm install -g @infactory/infactory-mcp
+
+# Or use with npx
+npx @infactory/infactory-mcp
+```
+
 ## Configuration
 
 The extension requires configuration through the DXT user interface. After installation, you'll need to configure the following settings:
@@ -56,6 +68,211 @@ The extension requires configuration through the DXT user interface. After insta
 - **Infactory API Base URL**: API base URL (defaults to `https://api.infactory.ai`)
   - Only change this if you're using a custom Infactory instance
   - Optional field with a sensible default
+
+## Connection Samples
+
+<details>
+<summary><b>Claude Desktop</b></summary>
+
+Add this to your Claude Desktop `claude_desktop_config.json` file:
+
+```json
+{
+  "mcpServers": {
+    "infactory-mcp": {
+      "command": "npx",
+      "args": ["-y", "@infactory/infactory-mcp"],
+      "env": {
+        "NF_API_KEY": "nf--YOUR_API_KEY_HERE",
+        "NF_BASE_URL": "https://api.infactory.ai"
+      }
+    }
+  }
+}
+```
+
+Note: Replace `nf--YOUR_API_KEY_HERE` with your actual Infactory API key.
+
+</details>
+
+<details>
+<summary><b>Cursor</b></summary>
+
+Add this to your Cursor MCP config file (usually at `~/.cursor/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "infactory-mcp": {
+      "command": "npx",
+      "args": ["-y", "@infactory/infactory-mcp"],
+      "env": {
+        "NF_API_KEY": "nf--YOUR_API_KEY_HERE",
+        "NF_BASE_URL": "https://api.infactory.ai"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><b>Windsurf</b></summary>
+
+Add this to your Windsurf MCP config file:
+
+```json
+{
+  "mcpServers": {
+    "infactory-mcp": {
+      "command": "npx",
+      "args": ["-y", "@infactory/infactory-mcp"],
+      "env": {
+        "NF_API_KEY": "nf--YOUR_API_KEY_HERE",
+        "NF_BASE_URL": "https://api.infactory.ai"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><b>VS Code</b></summary>
+
+Add this to your VS Code MCP config file:
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "infactory-mcp": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@infactory/infactory-mcp"],
+        "env": {
+          "NF_API_KEY": "nf--YOUR_API_KEY_HERE",
+          "NF_BASE_URL": "https://api.infactory.ai"
+        }
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><b>Zed</b></summary>
+
+Add this to your Zed `settings.json`:
+
+```json
+{
+  "context_servers": {
+    "infactory-mcp": {
+      "command": {
+        "path": "npx",
+        "args": ["-y", "@infactory/infactory-mcp"],
+        "env": {
+          "NF_API_KEY": "nf--YOUR_API_KEY_HERE",
+          "NF_BASE_URL": "https://api.infactory.ai"
+        }
+      },
+      "settings": {}
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><b>Cline</b></summary>
+
+Add this to your Cline MCP settings:
+
+```json
+{
+  "mcpServers": {
+    "infactory-mcp": {
+      "command": "npx",
+      "args": ["-y", "@infactory/infactory-mcp"],
+      "env": {
+        "NF_API_KEY": "nf--YOUR_API_KEY_HERE",
+        "NF_BASE_URL": "https://api.infactory.ai"
+      },
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><b>Using Alternative Package Managers</b></summary>
+
+### With Bun
+
+```json
+{
+  "mcpServers": {
+    "infactory-mcp": {
+      "command": "bunx",
+      "args": ["-y", "@infactory/infactory-mcp"],
+      "env": {
+        "NF_API_KEY": "nf--YOUR_API_KEY_HERE",
+        "NF_BASE_URL": "https://api.infactory.ai"
+      }
+    }
+  }
+}
+```
+
+### With Deno
+
+```json
+{
+  "mcpServers": {
+    "infactory-mcp": {
+      "command": "deno",
+      "args": ["run", "--allow-env", "--allow-net", "npm:@infactory/infactory-mcp"],
+      "env": {
+        "NF_API_KEY": "nf--YOUR_API_KEY_HERE",
+        "NF_BASE_URL": "https://api.infactory.ai"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><b>Windows Configuration</b></summary>
+
+For Windows users, the configuration is slightly different:
+
+```json
+{
+  "mcpServers": {
+    "infactory-mcp": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@infactory/infactory-mcp"],
+      "env": {
+        "NF_API_KEY": "nf--YOUR_API_KEY_HERE",
+        "NF_BASE_URL": "https://api.infactory.ai"
+      }
+    }
+  }
+}
+```
+
+</details>
 
 ## Usage
 
@@ -165,6 +382,9 @@ npm run dxt:validate
 ```bash
 # Run the MCP inspector to test tools
 npm run inspector
+
+# Or use npx directly
+npx @modelcontextprotocol/inspector npx @infactory/infactory-mcp
 ```
 
 ### Building for Distribution
@@ -213,6 +433,11 @@ The extension includes comprehensive error handling:
    - Large datasets may take longer to process
    - Consider breaking data into smaller chunks
    - Check your Infactory plan limits
+
+5. **Module resolution issues**
+   - Try using `bunx` instead of `npx` if you encounter module errors
+   - Ensure Node.js v18 or higher is installed
+   - Use `@infactory/infactory-mcp@latest` to get the latest version
 
 ### Debug Mode
 
